@@ -1,0 +1,16 @@
+# Instantiate a novel Kubernetes service named 'karsajobs' while assigning it the distinct label 'app: karsajobs'.
+# Configure the service to operate as a NodePort, directing traffic to port 8080 within pods distinguished by the 'type: backend' label.
+# Leveraging NodePort facilitates direct access to the application via the concatenation of the NODEIP and dynamically assigned NODEPORT, with NODEIP obtainable from the 'minikube ip' command, and NODEPORT retrievable through service description.
+apiVersion: v1
+kind: Service
+metadata:
+  name: karsajobs  # Name of the Kubernetes service
+  namespace: karsajobs-ns
+  labels:
+    app: karsajobs  # Label assigned to the service
+spec:
+  ports:
+    - port: 8080  # Port that the service will use
+  selector:
+    type: backend  # Selects pods with the label 'type: backend'
+  type: NodePort  # Exposes the Service on each Node's IP at a static port

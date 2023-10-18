@@ -1,0 +1,8 @@
+Github Repo
+https://github.com/pyroblazer/karsajob-microservices-project.git
+
+Karsajob-ui Package
+docker pull ghcr.io/pyroblazer/karsajobs-ui:latest
+
+Karsajob Package
+docker pull ghcr.io/pyroblazer/karsajobs:latest

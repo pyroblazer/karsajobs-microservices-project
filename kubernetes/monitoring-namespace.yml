@@ -1,0 +1,5 @@
+# Create a new Kubernetes namespace with the name 'monitoring'. 
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring

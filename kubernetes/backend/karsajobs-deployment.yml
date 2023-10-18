@@ -1,0 +1,47 @@
+# Configuration for the 'karsajobs' service in Kubernetes.
+# Defines replicas with pods labeled as 'app: karsajobs' and 'type: backend'.
+# The label 'type:backend' serves as the selector in the 'karsajobs-service.yml' file.
+# Contains a single container named 'karsajobs-server' that exposes port 8080.
+# The container uses an image from 'ghcr.io/pyroblazer/karsajobs:latest'.
+# Sets environment variables including APP_PORT, MONGO_HOST, MONGO_USER, and MONGO_PASS.
+# 'MONGO_USER' and 'MONGO_PASS' values are obtained from a Secret specified in 'mongodb/mongo-secret.yml'.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: karsajobs # Name of the deployment
+  namespace: karsajobs-ns
+  labels: # Labels for the deployment
+    app: karsajobs
+    type: backend
+spec:
+  replicas: 3 # Specifies the number of desired replicas
+  selector:
+    matchLabels: # Selector labels for the deployment
+      type: backend
+  template:
+    metadata:
+      labels: # Labels for the template
+        app: karsajobs
+        type: backend
+    spec:
+      containers: # Containers in the pod
+        - name: karsajobs-server # Name of the container
+          image: ghcr.io/pyroblazer/karsajobs:latest # Docker image for the container
+          ports:
+            - containerPort: 8080 # Port to expose within the container
+          env: # Environment variables for the container
+            - name: APP_PORT
+              value: '8080' # Value for the environment variable APP_PORT
+            - name: MONGO_HOST
+              value: mongodb # Value for the environment variable MONGO_HOST
+            - name: MONGO_USER
+              valueFrom: # Retrieve the value from a secret
+                secretKeyRef:
+                  name: mongodb-secret # Name of the secret
+                  key: MONGO_ROOT_USERNAME # Key in the secret for the username
+            - name: MONGO_PASS
+              valueFrom: # Retrieve the value from a secret
+                secretKeyRef:
+                  name: mongodb-secret # Name of the secret
+                  key: MONGO_ROOT_PASSWORD # Key in the secret for the password

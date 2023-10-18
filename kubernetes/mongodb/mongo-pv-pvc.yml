@@ -1,0 +1,32 @@
+# Create a Kubernetes PersistentVolume named 'mongodb-pv-volume' specifically intended for storing mongodb data.
+# This PersistentVolume (PV) is configured with a storage capacity of 4 gigabytes and is designed to be accessible exclusively by a single node (ReadWriteOnce).
+# The data is set to be stored within the host's '/mnt/data/mongodb' directory.
+apiVersion: v1  # Defines the version of the Kubernetes API used for this configuration.
+kind: PersistentVolume  # Specifies the type of Kubernetes resource being created, in this case, a PersistentVolume.
+metadata:  # Contains metadata that provides information about the PersistentVolume.
+  name: mongodb-pv-volume  # Specifies the name of the PersistentVolume.
+  namespace: karsajobs-ns  # Assigns the PersistentVolume to a specific namespace.
+spec:  # Describes the specification of the PersistentVolume.
+  storageClassName: manual  # Specifies the class of storage for the PersistentVolume.
+  capacity:  # Defines the storage capacity of the PersistentVolume.
+    storage: 4Gi  # Specifies the storage size as 4 Gigabytes.
+  accessModes:  # Specifies the access modes for the PersistentVolume.
+    - ReadWriteOnce  # Defines that the volume can be mounted as read-write by a single node.
+  hostPath:  # Defines the path on the host that should be used for the PersistentVolume.
+    path: '/mnt/data/mongodb'  # Specifies the path on the host where the PersistentVolume will be mounted.
+---
+# Create a Kubernetes PersistentVolumeClaim (PVC) named 'mongodb-pv-claim'
+# It is designed to search for an existing PersistentVolume (PV) that meets the specified requirements.
+# The requirements include 4 gigabytes of storage, a manual storage class, and ReadWriteOnce access mode.
+apiVersion: v1  # Specifies the version of the Kubernetes API that is used to create this resource.
+kind: PersistentVolumeClaim  # Indicates the kind of resource being created, in this case a PersistentVolumeClaim.
+metadata:  # Specifies the metadata of the resource.
+  name: mongodb-pv-claim  # Specifies the name of the PersistentVolumeClaim.
+  namespace: karsajobs-ns  # Specifies the namespace in which the PersistentVolumeClaim will be created.
+spec:  # Specifies the specifications of the PersistentVolumeClaim.
+  storageClassName: manual  # Defines the class of storage requested for the PersistentVolumeClaim.
+  accessModes:  # Specifies the access modes for the PersistentVolumeClaim.
+    - ReadWriteOnce  # Indicates that the volume can be mounted as read-write by a single node.
+  resources:  # Specifies the resource requirements for the PersistentVolumeClaim.
+    requests:  # Specifies the requested resources for the PersistentVolumeClaim.
+      storage: 4Gi  # Specifies the amount of storage requested for the PersistentVolumeClaim.

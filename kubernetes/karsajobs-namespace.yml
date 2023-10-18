@@ -1,0 +1,8 @@
+# Create a new Kubernetes namespace with the name 'karsajobs-ns'. 
+# The namespace is labeled with 'app: karsajobs' to help identify its purpose and related resources.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: karsajobs-ns
+  labels:
+    app: karsajobs

@@ -1,0 +1,19 @@
+# Create a new Kubernetes service with the name 'karsajobs-ui'.
+# The service is labeled as 'app: karsajobs' to allow for better organization and identification.
+# Configure the service type as NodePort, which will expose the service on a static port on each node.
+# This service will direct traffic to pods that have the label 'type: frontend' and will target port 8000 on those pods.
+# NodePort will allocate a specific port on the node, enabling access to the application via NODEIP:NODEPORT.
+# NODEIP can be obtained from the 'minikube ip' command, and NODEPORT can be retrieved by describing this service and viewing its port.
+apiVersion: v1  # Specifies the version of the Kubernetes API that is used to create this resource.
+kind: Service  # Indicates the kind of resource being created, in this case a Service.
+metadata:  # Specifies the metadata of the resource.
+  name: karsajobs-ui  # Specifies the name of the Service.
+  namespace: karsajobs-ns  # Specifies the namespace in which the Service will be created.
+  labels:  # Specifies the labels attached to the Service.
+    app: karsajobs  # Specifies the label 'app' and its value 'karsajobs'.
+spec:  # Specifies the specifications of the Service.
+  ports:  # Specifies the ports that the Service will use.
+    - port: 8000  # Specifies the port number that the Service will use.
+  selector:  # Specifies the label selector used to determine the pods to which the Service should apply.
+    type: frontend  # Specifies the label 'type' and its value 'frontend'.
+  type: NodePort  # Specifies the type of the Service, in this case, it is a NodePort service.

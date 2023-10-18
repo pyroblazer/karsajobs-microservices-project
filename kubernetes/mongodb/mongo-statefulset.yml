@@ -1,0 +1,62 @@
+# Defines a Kubernetes StatefulSet named 'mongodb', designed to manage a single replica of a MongoDB database.
+# The StatefulSet is associated with a headless service named 'mongodb' and employs 'type:db' as a label for the pods it creates.
+# Within each pod, a container is instantiated using the 'mongo:latest' image, identified as 'mongodb'.
+# The container is configured with the environment variables 'MONGO_INITDB_ROOT_USERNAME_FILE' and 'MONGO_INITDB_ROOT_PASSWORD_FILE',
+# where the values are retrieved from the '/etc/mongo-credentials' directory mounted from the 'mongodb-secret-mount' volume.
+# Additionally, the container's '/data/db' directory is mounted from the 'mongodb-persistent-storage' persistent volume.
+# The '/config' directory is also mounted using the 'mongodb-config-mount' volume, housing the 'mongo.conf' file populated with configuration details from the 'mongodb-config' ConfigMap.
+apiVersion: apps/v1  # Defines the API version for the StatefulSet.
+kind: StatefulSet  # Specifies the kind of resource, which is a StatefulSet in this case.
+
+metadata:  # Metadata for the StatefulSet.
+  name: mongodb  # Name of the StatefulSet.
+  namespace: karsajobs-ns  # Specifies the namespace in which the StatefulSet is created.
+
+spec:  # Specification for the StatefulSet.
+  selector:  # Defines the labels used to select the Pods that are part of the StatefulSet.
+    matchLabels:  # Labels used for the selection.
+      type: db  # Label with the value 'db'.
+
+  serviceName: mongodb  # Name of the Headless Service that the StatefulSet controls.
+  replicas: 3  # Specifies the number of replicas for the StatefulSet.
+  minReadySeconds: 10  # Specifies the minimum number of seconds for which a newly created Pod should be ready without any of its containers crashing.
+  
+  template:  # Describes the Pods that will be created.
+    metadata:  # Metadata for the Pod template.
+      labels:  # Labels for the Pod template.
+        type: db  # Label for the Pods created from this template.
+    
+    spec:  # Specification for the Pod template.
+      terminationGracePeriodSeconds: 10  # The amount of time given to the Pod to terminate gracefully before it is forcefully terminated.
+      containers:  # Describes the containers that will be part of the Pod.
+        - image: mongo:latest  # Specifies the Docker image to use for the container.
+          name: mongodb  # Name of the container.
+          env:  # Specifies the environment variables for the container.
+            - name: MONGO_INITDB_ROOT_USERNAME_FILE  # Environment variable name.
+              value: /etc/mongo-credentials/MONGO_ROOT_USERNAME  # Value of the environment variable.
+            - name: MONGO_INITDB_ROOT_PASSWORD_FILE  # Environment variable name.
+              value: /etc/mongo-credentials/MONGO_ROOT_PASSWORD  # Value of the environment variable.
+          ports:  # Specifies the ports that the container listens to.
+            - containerPort: 27017  # The port number that the container listens on.
+              name: mongodb  # Name of the port.
+          volumeMounts:  # Specifies the volumes that should be mounted into the container's filesystem.
+            - name: mongodb-persistent-storage  # Name of the volume.
+              mountPath: /data/db  # The path within the container where the volume should be mounted.
+            - name: mongodb-secret-mount  # Name of the volume.
+              mountPath: /etc/mongo-credentials  # The path within the container where the volume should be mounted.
+            - name: mongodb-config-mount  # Name of the volume.
+              mountPath: /config  # The path within the container where the volume should be mounted.
+              readOnly: true  # Specifies whether the volume should be mounted in read-only mode.
+      volumes:  # Specifies the volumes that can be mounted by containers in the Pod.
+        - name: mongodb-persistent-storage  # Name of the volume.
+          persistentVolumeClaim:  # Specifies the persistent volume claim.
+            claimName: mongodb-pv-claim  # Name of the persistent volume claim.
+        - name: mongodb-secret-mount  # Name of the volume.
+          secret:  # Specifies a secret to use for the volume.
+            secretName: mongodb-secret  # Name of the secret.
+        - name: mongodb-config-mount  # Name of the volume.
+          configMap:  # Specifies a configMap to use for the volume.
+            name: mongodb-config  # Name of the configMap.
+            items:  # Specifies the individual items within the configMap.
+              - key: mongo.conf  # Key within the configMap.
+                path: mongo.conf  # Path where the key's value should be mounted.

@@ -1,0 +1,34 @@
+NAME                                                         READY   STATUS    RESTARTS   AGE
+pod/alertmanager-prometheus-kube-prometheus-alertmanager-0   2/2     Running   0          75m
+pod/prometheus-grafana-56d854f665-bn5pt                      3/3     Running   0          75m
+pod/prometheus-kube-prometheus-operator-6cb64c98df-4sqxz     1/1     Running   0          75m
+pod/prometheus-kube-state-metrics-898dd9b88-qnc9v            1/1     Running   0          75m
+pod/prometheus-prometheus-kube-prometheus-prometheus-0       2/2     Running   0          75m
+pod/prometheus-prometheus-node-exporter-dkk87                1/1     Running   0          75m
+
+NAME                                              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+service/alertmanager-operated                     ClusterIP   None             <none>        9093/TCP,9094/TCP,9094/UDP   75m
+service/prometheus-grafana                        ClusterIP   10.99.89.0       <none>        80/TCP                       75m
+service/prometheus-kube-prometheus-alertmanager   ClusterIP   10.98.20.251     <none>        9093/TCP,8080/TCP            75m
+service/prometheus-kube-prometheus-operator       ClusterIP   10.106.122.113   <none>        443/TCP                      75m
+service/prometheus-kube-prometheus-prometheus     ClusterIP   10.108.66.78     <none>        9090/TCP,8080/TCP            75m
+service/prometheus-kube-state-metrics             ClusterIP   10.108.14.18     <none>        8080/TCP                     75m
+service/prometheus-operated                       ClusterIP   None             <none>        9090/TCP                     75m
+service/prometheus-prometheus-node-exporter       ClusterIP   10.100.109.67    <none>        9100/TCP                     75m
+
+NAME                                                 DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+daemonset.apps/prometheus-prometheus-node-exporter   1         1         1       1            1           kubernetes.io/os=linux   75m
+
+NAME                                                  READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/prometheus-grafana                    1/1     1            1           75m
+deployment.apps/prometheus-kube-prometheus-operator   1/1     1            1           75m
+deployment.apps/prometheus-kube-state-metrics         1/1     1            1           75m
+
+NAME                                                             DESIRED   CURRENT   READY   AGE
+replicaset.apps/prometheus-grafana-56d854f665                    1         1         1       75m
+replicaset.apps/prometheus-kube-prometheus-operator-6cb64c98df   1         1         1       75m
+replicaset.apps/prometheus-kube-state-metrics-898dd9b88          1         1         1       75m
+
+NAME                                                                    READY   AGE
+statefulset.apps/alertmanager-prometheus-kube-prometheus-alertmanager   1/1     75m
+statefulset.apps/prometheus-prometheus-kube-prometheus-prometheus       1/1     75m

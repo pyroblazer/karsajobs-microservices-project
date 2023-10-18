@@ -1,0 +1,65 @@
+version: 2.1
+executors:
+  docker:  # Define executor to use Docker
+    docker:  # Use Docker as the executor
+      - image: docker:stable  # Use the stable Docker image
+
+jobs:
+  lint-be-dockerfile:  # Define a job to lint the backend Dockerfile
+    docker:
+      - image: docker:stable  # Use the stable Docker image
+    steps:
+      - checkout  # Checkout the code
+      - setup_remote_docker  # Set up the Docker environment
+      - run:
+          name: Run hadolint  # Define the name of the step
+          command: docker run --rm -i hadolint/hadolint < karsajobs-be/Dockerfile  # Run Hadolint on the backend Dockerfile
+
+  lint-fe-dockerfile:  # Define a job to lint the frontend Dockerfile
+    docker:
+      - image: docker:stable  # Use the stable Docker image
+    steps:
+      - checkout  # Checkout the code
+      - setup_remote_docker  # Set up the Docker environment
+      - run:
+          name: Run hadolint  # Define the name of the step
+          command: docker run --rm -i hadolint/hadolint < karsajobs-fe/Dockerfile  # Run Hadolint on the frontend Dockerfile
+
+  build-be-karsajobs:  # Define a job to build and push the backend image
+    docker:
+      - image: docker:stable  # Use the stable Docker image
+    steps:
+      - checkout  # Checkout the code
+      - setup_remote_docker  # Set up the Docker environment
+      - run:
+          name: Build and push karsajobs backend image  # Define the name of the step
+          command: cd karsajobs-be && sh build_push_image_karsajobs.sh  # Run the script to build and push the backend image
+
+  build-fe-karsajobs:  # Define a job to build and push the frontend image
+    docker:
+      - image: docker:stable  # Use the stable Docker image
+    steps:
+      - checkout  # Checkout the code
+      - setup_remote_docker  # Set up the Docker environment
+      - run:
+          name: Build and push karsajobs frontend image  # Define the name of the step
+          command: cd karsajobs-fe && sh build_push_image_karsajobs_ui.sh  # Run the script to build and push the frontend image
+
+  test-be-app:  # Define a job to test the backend application
+    docker:
+      - image: cimg/go:1.19.3  # Use the specified Go image
+    steps:
+      - checkout  # Checkout the code
+      - run: cd karsajobs-be && go test -v -short --count=1 $(go list ./...)  # Run the tests for the backend application
+
+workflows:
+  version: 2  # Use workflow version 2
+  karsajobs-be:  # Define a workflow for the backend
+    jobs:
+      - lint-be-dockerfile  # Run the job to lint the backend Dockerfile
+      - test-be-app  # Run the job to test the backend application
+      - build-be-karsajobs  # Run the job to build and push the backend image
+  karsajobs-fe:  # Define a workflow for the frontend
+    jobs:
+      - lint-fe-dockerfile  # Run the job to lint the frontend Dockerfile
+      - build-fe-karsajobs  # Run the job to build and push the frontend image

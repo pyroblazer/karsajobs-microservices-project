@@ -1,0 +1,16 @@
+# Create a headless service named 'mongodb' in Kubernetes
+# This service will route to pods with the label 'type:db' and expose port 27017
+# Applications can use 'mongodb' as the host when connecting to this service
+apiVersion: v1  # Specifies the Kubernetes API version being used for the resource.
+kind: Service  # Defines that this is a Kubernetes Service resource.
+metadata:  # Metadata for the Service resource.
+  name: mongodb  # Specifies the name of the Service.
+  namespace: karsajobs-ns  # Specifies the namespace where the Service is located.
+spec:  # Defines the specification for the Service.
+  clusterIP: None  # Sets the cluster IP of the Service to None, which means it's headless.
+  ports:  # Specifies the ports to be exposed by the Service.
+  - protocol: TCP  # Sets the protocol for the port to TCP.
+    port: 27017  # Specifies the port number to be used for the Service.
+    targetPort: 27017  # Specifies the target port on the pod where the traffic will be forwarded.
+  selector:  # Specifies the labels that will be used for selecting the pods to which the Service applies.
+    type: db  # Selects the pods with the label "type" set to "db".

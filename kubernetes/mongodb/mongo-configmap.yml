@@ -1,0 +1,14 @@
+# This is a Kubernetes ConfigMap configuration file that creates a ConfigMap named 'mongodb-config'.
+# The ConfigMap is intended to store MongoDB configuration data. It contains a data section with a key 'mongo.conf' 
+# and a value that is a multiline string defining one of the essential MongoDB configuration parameters, namely, 
+# the path of the storage, specifically 'dbPath', which is set to '/data/db'. This configuration is essential for 
+# specifying the location where MongoDB will store its data.
+apiVersion: v1  # Specifies the version of the Kubernetes API that is used to create this resource.
+kind: ConfigMap  # Indicates the kind of resource being created, in this case a ConfigMap.
+metadata:  # Specifies the metadata of the resource.
+  name: mongodb-config  # Specifies the name of the ConfigMap.
+  namespace: karsajobs-ns  # Specifies the namespace in which the ConfigMap will be created.
+data:  # Specifies the data to be included in the ConfigMap.
+  mongo.conf: | # Specifies the configuration for MongoDB
+    storage:  
+      dbPath: /data/db  
